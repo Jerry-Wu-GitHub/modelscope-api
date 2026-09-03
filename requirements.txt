@@ -1,0 +1,5 @@
+fake-useragent
+httpx
+python-dotenv
+typing-extensions
+yarl
