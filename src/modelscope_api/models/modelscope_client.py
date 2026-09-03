@@ -12,6 +12,8 @@ from yarl import URL
 
 from ..config import (
     MODELSCOPE_API_TOKEN,
+    MODELSCOPE_API_VERSION,
+    MODELSCOPE_API_BASE_URL,
     MODELSCOPE_OPENAPI_BASE_URL,
     MODELSCOPE_OPENAPI_VERSION,
 )
@@ -30,21 +32,26 @@ class ModelScopeClient:
         self,
         *,
         api_key: Optional[str] = None,
-        openapi_base_url: Optional[Union[str, URL]] = None,
-        openapi_version: Optional[str] = None,
+        api_base_url     : Optional[Union[str, URL]] = None,
+        api_version      : Optional[str]             = None,
+        openapi_base_url : Optional[Union[str, URL]] = None,
+        openapi_version  : Optional[str]             = None,
         http_client: Optional[httpx.AsyncClient] = None,
         **kwargs
     ):
         """
         Args:
-            api_key (str): to obtain: https://www.modelscope.cn/my/settings/token
+            api_key: to obtain: https://www.modelscope.cn/my/settings/token
                 It can be passed in through the environment variable `MODELSCOPE_API_TOKEN`.
                 This will overwrite the header::Authorization in http_cient.
-            openapi_base_url (str): to obtain: https://www.modelscope.cn/docs/openapi
+            api_base_url: The base URL of ModelScope webpage API,
+                defaults to `"https://www.modelscope.cn/api"`.
+            api_version: The version of the API, defaults to `"v1"`.
+            openapi_base_url: to obtain: https://www.modelscope.cn/docs/openapi
                 The base URL of ModelScope OpenAPI,
                 defaults to `"https://modelscope.cn/openapi"`.
-            openapi_version (str): The version of the API, defaults to `"v1"`.
-            http_client (httpx.AsyncClient): An HTTP‑client object with the same methods
+            openapi_version: The version of the OpenAPI, defaults to `"v1"`.
+            http_client: An HTTP‑client object with the same methods
                 as `httpx.AsyncClient.request`, used for sending network requests.
             kwargs: The initialization parameters passed to `http_client`.
         """
@@ -54,7 +61,16 @@ class ModelScopeClient:
 
         self.api_key: Optional[str] = api_key
 
-        # URL
+        # API URL
+        if api_base_url is None:
+            api_base_url = MODELSCOPE_API_BASE_URL
+        if api_version is None:
+            api_version = MODELSCOPE_API_VERSION
+
+        self.api_base_url: URL = URL(api_base_url)
+        self.api_version: str = api_version
+
+        # Open API URL
         if openapi_base_url is None:
             openapi_base_url = MODELSCOPE_OPENAPI_BASE_URL
         if openapi_version is None:
@@ -100,6 +116,26 @@ class ModelScopeClient:
 
 
     @property
+    def api_url(self) -> URL:
+        """
+        The URL of API interface.
+
+        Returns like:
+            "https://www.modelscope.cn/api/v1"
+        """
+        return self.api_base_url / self.api_version
+
+
+    def get_api_url(self, subpath: Optional[str] = None) -> URL:
+        """
+        拼接完整的 API 路由。
+        """
+        if subpath is None:
+            return self.api_url
+        return self.api_url / subpath
+
+
+    @property
     def openapi_url(self) -> URL:
         """
         The URL of OpenAPI interface.
@@ -112,7 +148,7 @@ class ModelScopeClient:
 
     def get_openapi_url(self, subpath: Optional[str] = None) -> URL:
         """
-        拼接完整的路由。
+        拼接完整的 OpenAPI 路由。
         """
         if subpath is None:
             return self.openapi_url
@@ -153,10 +189,15 @@ class ModelScopeClient:
         return response
 
 
-    async def request_data(self, **kwargs) -> Optional[JsonObject | List[JsonObject]]:
+    async def request_data(
+        self,
+        *,
+        data_field: str = "data",
+        **kwargs
+    ) -> Optional[JsonObject | List[JsonObject]]:
         """
-        发送请求，并返回响应体中的 `data` 字段。
-        如果响应体中没有 `data` 字段，则返回整个响应体。
+        发送请求，并返回响应体中的字段 `data_field` （默认为 `"data"`）的值。
+        如果响应体中没有 `data_field` 字段，则返回整个响应体。
 
         Raises:
             ParseException: 如果解析失败。
@@ -173,26 +214,54 @@ class ModelScopeClient:
                 message=f"unexpected json string: {response.text}"
             ) from exp
 
+        # 把响应体的字段名一律改成小写
+        resp_json = {key.lower(): value for key, value in resp_json.items()}
+
         # 判断请求是否失败
         if not resp_json.get("success", True):
             raise ModelScopeException(
-                code=resp_json.get("code"),
+                code=str(resp_json.get("code")),
                 message=resp_json.get("message")
             )
 
-        if "data" in resp_json:
-            return resp_json["data"]
+        if data_field in resp_json:
+            return resp_json[data_field]
         return resp_json
+
+
+    async def request_api_data(
+        self,
+        subpath: Optional[str] = None,
+        *,
+        data_field="data",
+        **kwargs
+    ) -> Optional[JsonObject | List[JsonObject]]:
+        """
+        向 ModelScope API 发送请求，并返回响应体中的字段 `data_field` （默认为 "data"）的值。
+        如果响应体中没有 `data_field` 字段，则返回整个响应体。
+
+        Args:
+            subpath: 在 `self.api_url` 之后要拼接的子路径。
+                不能以 `/` 开头。
+
+        Raises:
+            ParseException: 如果解析失败。
+            ModelScopeException: 如果请求失败。
+        """
+        kwargs["url"] = str(self.get_api_url(subpath))
+        return await self.request_data(data_field=data_field, **kwargs)
 
 
     async def request_openapi_data(
         self,
         subpath: Optional[str] = None,
+        *,
+        data_field="data",
         **kwargs
     ) -> Optional[JsonObject | List[JsonObject]]:
         """
-        向 ModelScope OpenAPI 发送请求，并返回响应体中的 `data` 字段。
-        如果响应体中没有 `data` 字段，则返回整个响应体。
+        向 ModelScope OpenAPI 发送请求，并返回响应体中的字段 `data_field` （默认为 "data"）的值。
+        如果响应体中没有 `data_field` 字段，则返回整个响应体。
 
         Args:
             subpath: 在 `self.openapi_url` 之后要拼接的子路径。
@@ -203,4 +272,4 @@ class ModelScopeClient:
             ModelScopeException: 如果请求失败。
         """
         kwargs["url"] = str(self.get_openapi_url(subpath))
-        return await self.request_data(**kwargs)
+        return await self.request_data(data_field=data_field, **kwargs)

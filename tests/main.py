@@ -8,6 +8,7 @@ from collection import test_collection
 from magicube import test_magicube
 from studio import test_studio
 from user import test_user
+from _common import log_passed
 
 
 
@@ -20,6 +21,7 @@ async def test():
         await test_magicube(client.magicube)
         await test_studio(client.studio)
         await test_collection(client.collection)
+        log_passed("All Tests")
 
 
 if __name__ == '__main__':

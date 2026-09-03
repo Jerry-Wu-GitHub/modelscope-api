@@ -24,11 +24,11 @@ class CollectionClient(SubClient):
         self,
         modelscope_client: ModelScopeClient,
         *,
-        prefix: str = "collections"
+        openapi_prefix: str = "collections"
     ):
         super().__init__(
             super_client=modelscope_client,
-            prefix=prefix
+            openapi_prefix=openapi_prefix
         )
 
 

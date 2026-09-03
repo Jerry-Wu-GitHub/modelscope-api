@@ -49,6 +49,7 @@ async def test_collection(collection_client: CollectionClient):
             "position": 1,
         }
     ])
+    print("failed items:")
     pprint(failed_item_infos)
 
     logger.info("获取合集内的条目对象")

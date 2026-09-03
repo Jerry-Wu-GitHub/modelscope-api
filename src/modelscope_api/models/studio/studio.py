@@ -31,7 +31,7 @@ class Studio(SubClient):
         assert STUDIO_ID_PATTERN.fullmatch(self.id), f"Invalid studio ID: {self.id}"
         super().__init__(
             super_client=studio_client,
-            prefix=self.id
+            openapi_prefix=self.id
         )
 
         # 明文变量
@@ -195,3 +195,10 @@ class Studio(SubClient):
         })
         data = await self.request_openapi_data(**kwargs)
         return LogsInfo.from_json(data)
+
+
+    async def delete(self) -> None:
+        """
+        删除当前创空间。
+        """
+        await self.super_client.delete_studio(self.id)

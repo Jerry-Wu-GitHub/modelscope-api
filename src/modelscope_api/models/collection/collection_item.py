@@ -30,7 +30,7 @@ class CollectionItem(SubClient):
         self._item_object_id = item_object_id
         super().__init__(
             super_client=collection_item_client,
-            prefix=f"{self.item_type}/{self.item_object_id}"
+            openapi_prefix=f"{self.item_type}/{self.item_object_id}"
         )
 
 

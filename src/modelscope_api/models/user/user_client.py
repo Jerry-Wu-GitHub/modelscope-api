@@ -23,11 +23,11 @@ class UserClient(SubClient):
         self,
         modelscope_client: ModelScopeClient,
         *,
-        prefix: str = "users"
+        openapi_prefix: str = "users"
     ):
         super().__init__(
             super_client=modelscope_client,
-            prefix=prefix
+            openapi_prefix=openapi_prefix
         )
 
 

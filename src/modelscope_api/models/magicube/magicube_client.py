@@ -23,11 +23,11 @@ class MagicubeClient(SubClient):
         self,
         modelscope_client: ModelScopeClient,
         *,
-        prefix: str = "magicubes"
+        openapi_prefix: str = "magicubes"
     ):
         super().__init__(
             super_client=modelscope_client,
-            prefix=prefix
+            openapi_prefix=openapi_prefix
         )
 
 

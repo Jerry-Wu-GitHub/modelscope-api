@@ -27,7 +27,7 @@ class Collection(SubClient):
         assert COLLECTION_SLUG_PATTERN.fullmatch(self.slug), f"Invalid collection slug: {self.slug}"
         super().__init__(
             super_client=collection_client,
-            prefix=self.slug
+            openapi_prefix=self.slug
         )
 
         # 聚合子路由
@@ -111,7 +111,7 @@ class Collection(SubClient):
         })
         data = await self.request_openapi_data(**kwargs)
         self._slug = data["slug"]
-        self.prefix = self._slug
+        self.openapi_prefix = self._slug
         return await self.get_info()
 
 

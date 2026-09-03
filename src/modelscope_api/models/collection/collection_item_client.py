@@ -24,11 +24,11 @@ class CollectionItemClient(SubClient):
         self,
         collection: Collection,
         *,
-        prefix: str = "items"
+        openapi_prefix: str = "items"
     ):
         super().__init__(
             super_client=collection,
-            prefix=prefix
+            openapi_prefix=openapi_prefix
         )
 
 

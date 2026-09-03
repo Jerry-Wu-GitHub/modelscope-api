@@ -34,13 +34,13 @@ async def test_studio(studio_client: StudioClient):
     base_image_infos = await studio_client.query_available_base_images()
     pprint(base_image_infos)
 
-    # logger.info("创建创空间")
-    # studio = await studio_client.create_studio(
-    #     "hello_world04",
-    #     # owner="JerryWuModelScope",
-    #     timeout=30
-    # )
-    # logger.info(studio)
+    logger.info("创建创空间")
+    studio = await studio_client.create_studio(
+        "hello_world04",
+        # owner="JerryWuModelScope",
+        timeout=30
+    )
+    logger.info(studio)
 
     logger.info("操作创空间")
     studio = studio_client.get_studio("JerryWuModelScope/hello_world04")
@@ -72,5 +72,8 @@ async def test_studio(studio_client: StudioClient):
 
     logger.info("删除环境变量")
     await studio.variables.delete("VARIABLE_NAME")
+
+    logger.info("删除创空间")
+    await studio.delete()
 
     log_passed("Studio Test")

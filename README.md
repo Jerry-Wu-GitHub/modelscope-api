@@ -151,6 +151,12 @@ async def collection_example(client):
 
 项目包含完整的测试用例，位于 `tests/` 目录。运行前请确保已设置有效的 `MODELSCOPE_API_TOKEN`。
 
+> [!CAUTION]
+>
+> 测试用例里包含“删除创空间”，这是一个危险的操作，请确保您没有会受影响的创空间。
+>
+> 要实现该操作，需要使用“管理员权限”的 API Token。
+
 ## 📄 许可证
 
 本项目使用 [MIT](LICENSE) 许可证。

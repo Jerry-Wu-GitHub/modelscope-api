@@ -15,6 +15,13 @@ load_dotenv()
 # 用于 ModelScope 用户进行身份验证的令牌
 MODELSCOPE_API_TOKEN: Optional[str] = os.getenv("MODELSCOPE_API_TOKEN")
 
+# API 基础地址
+MODELSCOPE_API_VERSION: str = "v1"
+MODELSCOPE_API_BASE_URL: URL = URL(os.getenv(
+    "MODELSCOPE_API_BASE_URL",
+    "https://www.modelscope.cn/api"
+))
+
 # OpenAPI 基础地址
 MODELSCOPE_OPENAPI_VERSION: str = "v1"
 MODELSCOPE_OPENAPI_BASE_URL: URL = URL(os.getenv(

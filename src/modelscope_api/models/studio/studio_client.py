@@ -29,11 +29,13 @@ class StudioClient(SubClient):
         self,
         modelscope_client: ModelScopeClient,
         *,
-        prefix: str = "studios"
+        api_prefix="studio",
+        openapi_prefix: str = "studios",
     ):
         super().__init__(
             super_client=modelscope_client,
-            prefix=prefix
+            api_prefix=api_prefix,
+            openapi_prefix=openapi_prefix
         )
 
 
@@ -235,3 +237,17 @@ class StudioClient(SubClient):
         })
         data = await self.request_openapi_data(**kwargs)
         return self.get_studio(data["id"])
+
+
+    # ==== 删除创空间 ====
+
+    async def delete_studio(self, studio_id: str, **kwargs) -> None:
+        """
+        删除一个创空间。
+
+        Args:
+            studio_id: owner/repo_name
+        """
+        kwargs["method"] = "DELETE"
+        kwargs["subpath"] = studio_id
+        await self.request_api_data(**kwargs)

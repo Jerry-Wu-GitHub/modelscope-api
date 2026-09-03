@@ -26,7 +26,7 @@ class EnvironmentVariableClient(SubClient):
         self.type: EnvironmentVariableType = EnvironmentVariableType(type)
         super().__init__(
             super_client=studio,
-            prefix=f"{self.type}s"
+            openapi_prefix=f"{self.type}s"
         )
 
 
@@ -41,7 +41,7 @@ class EnvironmentVariableClient(SubClient):
         data = await self.request_openapi_data(**kwargs)
         environment_variable_infos = list(map(
             EnvironmentVariableInfo.from_json,
-            data.get(self.prefix) or []
+            data.get(f"{self.type}s") or []
         ))
         return environment_variable_infos
 
