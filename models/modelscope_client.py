@@ -13,6 +13,7 @@ from ..config import (
 )
 from ..exceptions import ParseException, ModelScopeException
 from ..utils.typing import JsonObject
+from .collection_client import CollectionClient
 from .magicube_client import MagicubeClient
 from .studio_client import StudioClient
 from .user_client import UserClient
@@ -71,6 +72,7 @@ class ModelScopeClient:
             headers["user-agent"] = UserAgent().random # 生成随机 UA
 
         # 聚合子路由
+        self.collection = CollectionClient(self)
         self.magicube = MagicubeClient(self)
         self.studio = StudioClient(self)
         self.user = UserClient(self)

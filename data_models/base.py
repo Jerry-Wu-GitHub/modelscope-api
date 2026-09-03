@@ -4,6 +4,8 @@
 
 from __future__ import annotations
 
+from typing import List
+
 from ..utils.typing import JsonObject
 
 
@@ -13,8 +15,8 @@ class BaseDataClass:
     """
 
     @classmethod
-    def from_json(cls, data: JsonObject) -> BaseDataClass:
+    def from_json(cls, data: JsonObject | List[JsonObject]) -> BaseDataClass:
         """
-        从 JSON 对象构造。
+        从 JSON 数据对象构造。
         """
         return cls(**data)

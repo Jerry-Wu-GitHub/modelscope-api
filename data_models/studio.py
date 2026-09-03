@@ -56,6 +56,7 @@ class StudioActiveConfig(BaseDataClass):
     )
 
 
+
 @dataclass(frozen=True)
 class StudioRuntimeInfo(BaseDataClass):
     """创空间运行时状态信息"""
@@ -77,6 +78,7 @@ class StudioRuntimeInfo(BaseDataClass):
         description="失败信息（仅在错误状态时返回）",
         default=None
     )
+
 
 
 class StudioVisibility(StrEnum):
