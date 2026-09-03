@@ -1,127 +1,38 @@
 """
-对单个合集的操作。
+集成封装与合集条目（Collection Item）有关的 API。
 """
-
 
 from __future__ import annotations
 
 from typing import Dict, Iterable, List, Optional, TYPE_CHECKING
 
-from ..utils.regex import COLLECTION_SLUG_PATTERN
-from ..utils.typing import JsonObject
-from ..data_models.collection import CollectionInfo, CollectionTheme, CollectionVisibility
-from ..data_models.collection_item import CollectionItemType, CollectionItemInfo
-from ._sub_client import SubClient
+from ...utils.typing import JsonObject
+from ...data_models.collection import CollectionItemType, CollectionItemInfo
+from .._sub_client import SubClient
 from .collection_item import CollectionItem
 
 if TYPE_CHECKING:
-    from .collection_client import CollectionClient
+    from .collection import Collection
 
 
-
-class Collection(SubClient):
+class CollectionItemClient(SubClient):
     """
-    单个合集。
+    集成封装与合集条目（Collection Item）有关的 API。
     """
 
-    def __init__(self, collection_client: CollectionClient, slug: str):
-        self._slug = slug
-        assert COLLECTION_SLUG_PATTERN.fullmatch(self.slug), f"Invalid collection slug: {self.slug}"
+    def __init__(
+        self,
+        collection: Collection,
+        *,
+        prefix: str = "items"
+    ):
         super().__init__(
-            super_client=collection_client,
-            prefix=self.slug
+            super_client=collection,
+            prefix=prefix
         )
 
 
-    def __str__(self) -> str:
-        return f"{type(self).__name__}<{self.slug}>"
-
-
-    # ==== 只读属性 ====
-
-    @property
-    def slug(self) -> str:
-        """
-        Collection slug (owner/name)
-        """
-        return self._slug
-
-
-    @property
-    def owner(self) -> str:
-        """
-        拥有者（个人用户名或组织名）
-        """
-        return self._slug.split("/")[0]
-
-
-    @property
-    def name(self) -> str:
-        """
-        合集英文名。
-        """
-        return self._slug.split("/")[1]
-
-
-    # ==== 合集操作 ====
-
-    async def get_info(self, **kwargs) -> CollectionInfo:
-        """
-        获取当前 Collection 的详细信息。
-
-        visibility=public 时可以不认证；visibility=private 时必须认证。
-        """
-        kwargs["method"] = "GET"
-        kwargs["subpath"] = None
-        data = await self.request_openapi_data(**kwargs)
-        return CollectionInfo.from_json(data)
-
-
-    async def update(
-        self,
-        *,
-        title: Optional[str] = None,
-        description: Optional[str] = None,
-        owner: Optional[str] = None,
-        visibility: Optional[CollectionVisibility] = None,
-        theme: Optional[CollectionTheme] = None,
-        **kwargs
-    ) -> CollectionInfo:
-        """
-        更新 Collection 元数据。传入哪个字段即更新哪个字段，未传字段保持原值。
-
-        open/close 语义映射为 visibility（public/private）。
-
-        Args:
-            title: Collection 标题（最长 128 字符）。
-            description: Collection 描述（Markdown）。
-            owner: 所有者（用户名或组织名）。
-            visibility: 可见性：public / private。
-            theme: 主题标签，枚举值：Blue/Pink/Purple/Cyan。
-        """
-        kwargs["method"] = "PATCH"
-        kwargs["subpath"] = None
-        kwargs.setdefault("json", {}).update({
-            "title": title,
-            "description": description,
-            "owner": owner,
-            "visibility": visibility,
-            "theme": theme,
-        })
-        data = await self.request_openapi_data(**kwargs)
-        self._slug = data["slug"]
-        self.prefix = self._slug
-        return await self.get_info()
-
-
-    async def delete(self) -> None:
-        """
-        删除当前合集。
-        """
-        await self.super_client.delete_collection(self.slug)
-
-
-    # ==== 条目操作 ====
+    # ==== 查看条目信息 ====
 
     async def get_item_infos(
         self,
@@ -141,7 +52,7 @@ class Collection(SubClient):
             page_size: 每页大小（1~50）。
         """
         kwargs["method"] = "GET"
-        kwargs["subpath"] = "items"
+        kwargs["subpath"] = None
         kwargs.setdefault("params", {}).update({
             "item_type": item_type,
             "page_number": page_number,
@@ -155,8 +66,12 @@ class Collection(SubClient):
         return collection_item_infos
 
 
+    # ==== 添加条目 ====
+
     @staticmethod
-    def _extract_item_infos(items: Iterable[CollectionItemInfo | JsonObject]) -> List[Dict[str, str | int]]:
+    def _extract_item_infos(
+        items: Iterable[CollectionItemInfo | JsonObject]
+    ) -> List[Dict[str, str | int]]:
         """
         从给定的 items 列表中提取 item 的主要信息：
         - item_type （必须）
@@ -204,7 +119,7 @@ class Collection(SubClient):
             添加失败的条目列表。每个条目有 reason 属性指示其失败原因。
         """
         kwargs["method"] = "POST"
-        kwargs["subpath"] = "items"
+        kwargs["subpath"] = None
 
         # 往请求体中添加 items 列表
         item_list = kwargs.setdefault("json", {}).setdefault("items", [])
@@ -220,6 +135,8 @@ class Collection(SubClient):
         ))
         return failed_item_infos
 
+
+    # ==== 修改条目 ====
 
     async def update_items(
         self,
@@ -239,7 +156,7 @@ class Collection(SubClient):
             更新失败的条目列表。每个条目有 reason 属性指示其失败原因。
         """
         kwargs["method"] = "PATCH"
-        kwargs["subpath"] = "items"
+        kwargs["subpath"] = None
 
         # 往请求体中添加 items 列表
         item_list = kwargs.setdefault("json", {}).setdefault("items", [])
@@ -260,6 +177,8 @@ class Collection(SubClient):
         return failed_item_infos
 
 
+    # ==== 删除条目 ====
+
     async def delete_item(
         self,
         item_type: str,
@@ -275,7 +194,7 @@ class Collection(SubClient):
                 可包含 /（作为 items/{item_type}/ 之后的整段剩余路径），无需 URL 编码。
         """
         kwargs["method"] = "DELETE"
-        kwargs["subpath"] = f"items/{item_type}/{item_object_id}"
+        kwargs["subpath"] = f"{item_type}/{item_object_id}"
         await self.request_openapi_data(**kwargs)
 
 
@@ -290,7 +209,7 @@ class Collection(SubClient):
         构造 CollectionItem 对象。
         """
         return CollectionItem(
-            collection=self,
+            collection_item_client=self,
             item_type=item_type,
             item_object_id=item_object_id,
         )

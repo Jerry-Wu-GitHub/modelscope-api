@@ -6,16 +6,19 @@ from __future__ import annotations
 
 from typing import Optional, TYPE_CHECKING
 
-from ..utils.regex import STUDIO_ID_PATTERN
-from ..data_models.environment_variable import EnvironmentVariableType
-from ..data_models.studio import StudioInfo, StudioRuntimeInfo, StudioVisibility
-from ..data_models.sdk import SDKType
-from ..data_models.logs import LogsInfo, LogsType
-from ._sub_client import SubClient
+from ...utils.regex import STUDIO_ID_PATTERN
+from ...data_models.studio import (
+    StudioInfo, StudioRuntimeInfo, StudioVisibility,
+    EnvironmentVariableType,
+    SDKType,
+    LogsInfo, LogsType
+)
+from .._sub_client import SubClient
 from .environment_variable_client import EnvironmentVariableClient
 
 if TYPE_CHECKING:
     from .studio_client import StudioClient
+
 
 
 class Studio(SubClient):

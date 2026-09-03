@@ -1,3 +1,7 @@
+"""
+对所有 API 的聚合。
+"""
+
 import json
 from typing import Any, Dict, List, Optional, Union
 
@@ -13,10 +17,10 @@ from ..config import (
 )
 from ..exceptions import ParseException, ModelScopeException
 from ..utils.typing import JsonObject
-from .collection_client import CollectionClient
-from .magicube_client import MagicubeClient
-from .studio_client import StudioClient
-from .user_client import UserClient
+from .collection import CollectionClient
+from .magicube import MagicubeClient
+from .studio import StudioClient
+from .user import UserClient
 
 
 class ModelScopeClient:

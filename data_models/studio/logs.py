@@ -8,7 +8,8 @@ from typing import List
 from pydantic import Field
 from pydantic.dataclasses import dataclass
 
-from .base import BaseDataClass
+from ..base import BaseDataClass
+
 
 
 class LogsType(StrEnum):

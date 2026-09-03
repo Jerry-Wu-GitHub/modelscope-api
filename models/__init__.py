@@ -1,5 +1,9 @@
+"""
+封装了 API 的模型，
+"""
+
+from .collection import CollectionClient, Collection, CollectionItem
+from .magicube import MagicubeClient
 from .modelscope_client import ModelScopeClient
-from .user_client import UserClient
-from .studio_client import StudioClient
-from .studio import Studio
-from .environment_variable_client import EnvironmentVariableClient
+from .studio import StudioClient, Studio, EnvironmentVariableClient
+from .user import UserClient

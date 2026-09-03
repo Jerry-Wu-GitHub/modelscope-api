@@ -1,12 +1,13 @@
 """
-魔粒数据模型。
+魔粒余额数据模型。
 """
 
 from pydantic import Field
 from pydantic.dataclasses import dataclass
 
-from ..utils.typing import Real
-from .base import BaseDataClass
+from ...utils.typing import Real
+from ..base import BaseDataClass
+
 
 
 @dataclass(frozen=True)

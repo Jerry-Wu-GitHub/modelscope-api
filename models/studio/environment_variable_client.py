@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from typing import List, TYPE_CHECKING
 
-from ..data_models.environment_variable import EnvironmentVariableInfo, EnvironmentVariableType
-from ._sub_client import SubClient
+from ...data_models.studio import EnvironmentVariableInfo, EnvironmentVariableType
+from .._sub_client import SubClient
 
 if TYPE_CHECKING:
     from .studio import Studio

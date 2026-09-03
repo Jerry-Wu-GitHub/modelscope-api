@@ -10,8 +10,8 @@ from typing import List, Optional
 from pydantic import Field
 from pydantic.dataclasses import dataclass
 
-from ..utils.regex import COLLECTION_SLUG_PATTERN
-from .base import BaseDataClass
+from ...utils.regex import COLLECTION_SLUG_PATTERN
+from ..base import BaseDataClass
 from .collection_item import CollectionItemInfo
 
 

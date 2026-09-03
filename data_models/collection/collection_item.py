@@ -10,7 +10,7 @@ from typing import Optional
 from pydantic import Field
 from pydantic.dataclasses import dataclass
 
-from .base import BaseDataClass
+from ..base import BaseDataClass
 
 
 
@@ -84,7 +84,8 @@ class CollectionItemInfo(BaseDataClass):
 
     reason: Optional[str] = Field(
         description=(
-            "失败原因错误码，如 ResourceNotFound、ItemAlreadyInCollection、ItemNotInCollection、PermissionDenied。"
+            "失败原因错误码，如 ResourceNotFound, ItemAlreadyInCollection, "
+            "ItemNotInCollection, PermissionDenied。"
             "仅当添加或更新条目失败时有效。"
         ),
         default=None

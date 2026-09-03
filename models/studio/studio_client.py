@@ -6,15 +6,18 @@ from __future__ import annotations
 
 from typing import List, Literal, Optional, TYPE_CHECKING
 
-from ..data_models.studio import StudioInfo, StudioVisibility
-from ..data_models.sdk import SDKType, SDKVersionInfo
-from ..data_models.hardware import HardwareInfo
-from ..data_models.base_image import BaseImageInfo
-from ._sub_client import SubClient
+from ...data_models.studio import (
+    BaseImageInfo,
+    HardwareInfo,
+    SDKType, SDKVersionInfo,
+    StudioInfo, StudioVisibility,
+)
+from .._sub_client import SubClient
 from .studio import Studio
 
 if TYPE_CHECKING:
-    from .modelscope_client import ModelScopeClient
+    from ..modelscope_client import ModelScopeClient
+
 
 
 class StudioClient(SubClient):

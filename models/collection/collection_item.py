@@ -7,11 +7,11 @@ from __future__ import annotations
 
 from typing import Optional, TYPE_CHECKING
 
-from ..data_models.collection_item import CollectionItemInfo
-from ._sub_client import SubClient
+from ...data_models.collection import CollectionItemInfo
+from .._sub_client import SubClient
 
 if TYPE_CHECKING:
-    from .collection import Collection
+    from .collection_item_client import CollectionItemClient
 
 
 
@@ -22,15 +22,15 @@ class CollectionItem(SubClient):
 
     def __init__(
         self,
-        collection: Collection,
+        collection_item_client: CollectionItemClient,
         item_type: str,
         item_object_id: str,
     ):
         self._item_type = item_type
         self._item_object_id = item_object_id
         super().__init__(
-            super_client=collection,
-            prefix=f"items/{self.item_type}/{self.item_object_id}"
+            super_client=collection_item_client,
+            prefix=f"{self.item_type}/{self.item_object_id}"
         )
 
 

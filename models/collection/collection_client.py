@@ -6,12 +6,13 @@ from __future__ import annotations
 
 from typing import List, Literal, Optional, TYPE_CHECKING
 
-from ..data_models.collection import CollectionInfo, CollectionTheme, CollectionVisibility
-from ._sub_client import SubClient
+from ...data_models.collection import CollectionInfo, CollectionTheme, CollectionVisibility
+from .._sub_client import SubClient
 from .collection import Collection
 
 if TYPE_CHECKING:
-    from .modelscope_client import ModelScopeClient
+    from ..modelscope_client import ModelScopeClient
+
 
 
 class CollectionClient(SubClient):

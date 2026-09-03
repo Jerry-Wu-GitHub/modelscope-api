@@ -7,7 +7,8 @@ from typing import List, Literal, Optional
 from pydantic import Field
 from pydantic.dataclasses import dataclass
 
-from .base import BaseDataClass
+from ..base import BaseDataClass
+
 
 
 @dataclass(frozen=True)

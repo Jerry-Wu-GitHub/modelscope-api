@@ -10,10 +10,11 @@ from typing import List, Optional, override
 from pydantic import Field
 from pydantic.dataclasses import dataclass
 
-from ..utils.regex import STUDIO_ID_PATTERN
-from ..utils.typing import JsonObject
-from .base import BaseDataClass
+from ...utils.regex import STUDIO_ID_PATTERN
+from ...utils.typing import JsonObject
+from ..base import BaseDataClass
 from .sdk import SDKType
+
 
 
 class StudioRuntimeStatus(StrEnum):

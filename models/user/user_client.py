@@ -6,11 +6,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ..data_models.user import UserInfo
-from ._sub_client import SubClient
+from ...data_models.user import UserInfo
+from .._sub_client import SubClient
 
 if TYPE_CHECKING:
-    from .modelscope_client import ModelScopeClient
+    from ..modelscope_client import ModelScopeClient
+
 
 
 class UserClient(SubClient):
