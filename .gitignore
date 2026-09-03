@@ -139,6 +139,3 @@ cython_debug/
 
 # Documents
 /docs/
-
-# Test
-/test/

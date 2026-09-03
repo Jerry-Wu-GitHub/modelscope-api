@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "modelscope-api"         # 包名，保持与项目仓库名一致
+version = "0.0.1"               # 当前版本
+description = "A Python async SDK that wraps the ModelScope API into a clean, type-safe interface." # 简短描述
+readme = "README.md"            # 自述文件，PyPI 会将其渲染为项目首页
+authors = [{name = "Jerry", email = "wujr24@m.fudan.edu.cn"}]  # 作者信息
+license = {text = "MIT"}        # 指定许可证，与 LICENSE 文件一致
+classifiers = [                 # 帮助用户在 PyPI 上找到你的项目
+    # 开发状态
+    "Development Status :: 3 - Alpha",
+
+    # 目标受众
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+
+    # 许可证
+    "License :: OSI Approved :: MIT License",
+
+    # 操作系统
+    "Operating System :: OS Independent",
+
+    # 编程语言 & Python 版本
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+requires-python = ">=3.11"
+dependencies = [                # 项目的运行时依赖，从 requirements.txt 移植
+    "fake-useragent",
+    "httpx",
+    "python-dotenv",
+    "typing-extensions",
+    "yarl",
+]
+
+[project.urls]                  # 可选，但推荐，指向你的项目主页或仓库
+Homepage = "https://github.com/Jerry-Wu-GitHub/modelscope-api"
+Repository = "https://github.com/Jerry-Wu-GitHub/modelscope-api.git"
