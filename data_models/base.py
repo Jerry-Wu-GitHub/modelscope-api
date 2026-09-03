@@ -4,12 +4,7 @@
 
 from __future__ import annotations
 
-from typing import Dict
-
-from pydantic import JsonValue
-
-
-JsonObject = Dict[str, JsonValue]
+from ..utils.typing import JsonObject
 
 
 class BaseDataClass:

@@ -12,7 +12,8 @@ from ..config import (
     MODELSCOPE_OPENAPI_VERSION,
 )
 from ..exceptions import ParseException, ModelScopeException
-from ..data_models.base import JsonObject
+from ..utils.typing import JsonObject
+from .magicube_client import MagicubeClient
 from .studio_client import StudioClient
 from .user_client import UserClient
 
@@ -62,7 +63,7 @@ class ModelScopeClient:
         if self._http_client_is_local:
             http_client = httpx.AsyncClient(**kwargs)
         self._http_client = http_client
-        self._kwargs: Dict[str, JsonValue] = kwargs.copy()
+        self._kwargs: Dict[str, Any] = kwargs.copy()
 
         # 添加伪造的 User-Agent 头
         headers = self._kwargs.setdefault("headers", {})
@@ -70,6 +71,7 @@ class ModelScopeClient:
             headers["user-agent"] = UserAgent().random # 生成随机 UA
 
         # 聚合子路由
+        self.magicube = MagicubeClient(self)
         self.studio = StudioClient(self)
         self.user = UserClient(self)
 
