@@ -76,4 +76,13 @@ async def test_studio(studio_client: StudioClient):
     logger.info("删除创空间")
     await studio.delete()
 
+    logger.info("调用创空间 API")
+    studio = studio_client.get_studio("JerryWuModelScope/httpbin")
+    print("Base URL:", studio.base_url)
+    response = await studio.request_studio_api(method="GET")
+    try:
+        pprint(response.json())
+    except:
+        print(response.text)
+
     log_passed("Studio Test")

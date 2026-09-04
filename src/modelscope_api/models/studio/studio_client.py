@@ -32,8 +32,9 @@ class StudioClient(SubClient):
         api_prefix="studio",
         openapi_prefix: str = "studios",
     ):
+        self.modelscope_client = modelscope_client
         super().__init__(
-            super_client=modelscope_client,
+            super_client=self.modelscope_client,
             api_prefix=api_prefix,
             openapi_prefix=openapi_prefix
         )

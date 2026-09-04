@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "modelscope-api"         # 包名，保持与项目仓库名一致
-version = "0.0.2"               # 当前版本
+version = "0.0.3"               # 当前版本
 description = "A Python async SDK that wraps the ModelScope API into a clean, type-safe interface." # 简短描述
 readme = "README.md"            # 自述文件，PyPI 会将其渲染为项目首页
 authors = [{name = "Jerry", email = "wujr24@m.fudan.edu.cn"}]  # 作者信息

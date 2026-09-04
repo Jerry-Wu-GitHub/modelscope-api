@@ -6,6 +6,10 @@ from __future__ import annotations
 
 from typing import Optional, TYPE_CHECKING
 
+import httpx
+from yarl import URL
+
+from ...config import STUDIO_API_DOMAIN
 from ...utils.regex import STUDIO_ID_PATTERN
 from ...data_models.studio import (
     StudioInfo, StudioRuntimeInfo, StudioVisibility,
@@ -202,3 +206,31 @@ class Studio(SubClient):
         删除当前创空间。
         """
         await self.super_client.delete_studio(self.id)
+
+
+    # ==== 访问创空间 API ====
+
+    @property
+    def base_url(self) -> URL:
+        """
+        创空间的 API 调用根域名，服务的基础访问入口，不带接口路径。
+        """
+        host = (
+            "studio-"
+            f"{self.owner.lower()}-"
+            f"{self.repo_name.lower()}."
+            f"{STUDIO_API_DOMAIN}"
+        ).replace('_', '-')
+        return URL.build(scheme="https", host=host)
+
+
+    async def request_studio_api(self, subpath: Optional[str] = None, **kwargs) -> httpx.Response:
+        """
+        调用当前创空间的 API。
+        """
+        if subpath is None:
+            api_url = self.base_url
+        else:
+            api_url = self.base_url / subpath
+        kwargs["url"] = str(api_url)
+        return await self.super_client.modelscope_client.request(**kwargs)

@@ -28,3 +28,9 @@ MODELSCOPE_OPENAPI_BASE_URL: URL = URL(os.getenv(
     "MODELSCOPE_OPENAPI_BASE_URL",
     "https://modelscope.cn/openapi"
 ))
+
+# 创空间 API 上级域名
+STUDIO_API_DOMAIN: str = os.getenv(
+    "STUDIO_API_DOMAIN",
+    "api-inference.modelscope.net"
+)
