@@ -1,5 +1,7 @@
+aiofiles
 fake-useragent
 httpx
+modelscope-hub
 python-dotenv
 typing-extensions
 yarl

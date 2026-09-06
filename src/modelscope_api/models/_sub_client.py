@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from typing import List, Optional, Union, TYPE_CHECKING
 
+from modelscope_hub import HubApi
 from yarl import URL
 
 if TYPE_CHECKING:
@@ -33,6 +34,14 @@ class SubClient:
         self.super_client = super_client
         self.api_prefix: Optional[str] = api_prefix
         self.openapi_prefix: Optional[str] = openapi_prefix
+
+
+    @property
+    def hub_api(self) -> HubApi:
+        """
+        返回一个 HubApi 对象，用于实现 OpenAPI 中未实现的操作。
+        """
+        return self.super_client.hub_api
 
 
     # ==== API ====

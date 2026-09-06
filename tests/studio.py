@@ -1,6 +1,8 @@
+import asyncio
 from pprint import pprint
 
 from modelscope_api.models import StudioClient
+from modelscope_api.exceptions import ModelScopeException
 
 from _common import logger, log_passed
 
@@ -35,33 +37,23 @@ async def test_studio(studio_client: StudioClient):
     pprint(base_image_infos)
 
     logger.info("创建创空间")
-    studio = await studio_client.create_studio(
-        "hello_world04",
-        # owner="JerryWuModelScope",
-        timeout=30
-    )
+    try:
+        studio = await studio_client.create_studio(
+            "hello_world04",
+            owner="JerryWuModelScope",
+            timeout=30
+        )
+    except ModelScopeException:
+        studio = studio_client.get_studio("JerryWuModelScope/hello_world04")
     logger.info(studio)
 
     logger.info("操作创空间")
-    studio = studio_client.get_studio("JerryWuModelScope/hello_world04")
     studio_info = await studio.get_info()
     pprint(studio_info)
 
     logger.info("修改展示名")
     studio_info = await studio.update_settings(display_name="你好，世界！04")
     pprint(studio_info)
-
-    logger.info("部署创空间")
-    studio_runtime_info = await studio.deploy(timeout=30)
-    pprint(studio_runtime_info)
-
-    logger.info("查看日志")
-    logs_info = await studio.get_logs("run")
-    pprint(logs_info)
-
-    logger.info("停止创空间")
-    studio_runtime_info = await studio.stop(timeout=30)
-    pprint(studio_runtime_info)
 
     logger.info("添加环境变量")
     await studio.variables.add("VARIABLE_NAME", "variable value")
@@ -72,6 +64,33 @@ async def test_studio(studio_client: StudioClient):
 
     logger.info("删除环境变量")
     await studio.variables.delete("VARIABLE_NAME")
+
+    logger.info("上传文件")
+    await studio.upload_file(
+        path_or_fileobj="../README.md",
+        path_in_repo="README.md"
+    )
+
+    logger.info("上传文件夹")
+    await studio.upload_folder(
+        folder_path="../",
+        path_in_repo="",
+        load_ignore=[".gitignore"]
+    )
+
+    logger.info("部署创空间")
+    studio_runtime_info = await studio.deploy(timeout=30)
+    pprint(studio_runtime_info)
+
+    await asyncio.sleep(20)
+
+    logger.info("查看日志")
+    logs_info = await studio.get_logs("build")
+    pprint(logs_info)
+
+    logger.info("停止创空间")
+    studio_runtime_info = await studio.stop(timeout=30)
+    pprint(studio_runtime_info)
 
     logger.info("删除创空间")
     await studio.delete()

@@ -16,10 +16,10 @@ class BusinessException(Exception):
     """
 
     # 默认消息
-    DEFAULT_MESSAGE     : ClassVar[str] = "Business Error"
+    DEFAULT_MESSAGE: ClassVar[str] = "Business Error"
 
     # 默认错误代码
-    DEFAULT_CODE        : ClassVar[str] = "ERROR"
+    DEFAULT_CODE:    ClassVar[str] = "ERROR"
 
     def __init__(
         self,

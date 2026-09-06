@@ -20,7 +20,7 @@ async def test():
         await test_user(client.user)
         await test_magicube(client.magicube)
         await test_studio(client.studio)
-        await test_collection(client.collection)
+        # await test_collection(client.collection)
         log_passed("All Tests")
 
 

@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from fake_useragent import UserAgent
 import httpx
+from modelscope_hub import HubApi
 from typing_extensions import Self
 from yarl import URL
 
@@ -113,6 +114,17 @@ class ModelScopeClient:
         """Close the client within the instance."""
         if self._http_client_is_local:
             await self._http_client.aclose()
+
+
+    @property
+    def hub_api(self) -> HubApi:
+        """
+        将 api_key 注入 HubApi 并返回 HubApi 对象。
+        """
+        return HubApi(
+            endpoint=str(self.openapi_base_url.origin()),
+            token=self.api_key
+        )
 
 
     @property
